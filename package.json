@@ -1,10 +1,10 @@
-
 {
   "name": "sambhaji-nagar-travel",
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": { "node": ">=22.12.0" },
   "scripts": { "dev": "vite", "build": "vite build", "preview": "vite preview" },
-  "dependencies": { "@vitejs/plugin-react": "latest", "vite": "latest", "react": "latest", "react-dom": "latest", "lucide-react": "latest", "framer-motion": "latest" },
+  "dependencies": { "@vitejs/plugin-react": "latest", "vite": "8.0.3", "react": "latest", "react-dom": "latest", "lucide-react": "latest", "framer-motion": "latest" },
   "devDependencies": { "tailwindcss": "^3.4.17", "postcss": "^8.5.3", "autoprefixer": "^10.4.21" }
 }

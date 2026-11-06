@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
@@ -24,8 +23,7 @@ const selectBooking = (selection) => {
 
 function Header() {
   const [open, setOpen] = useState(false);
-  const links = [['Our Vehicles', 'vehicles'], ['Explore Sambhaji Nagar', 'destinations'], ['Tour Packages', 'packages'], ['Abou
-t Us', 'about'], ['Contact Us', 'contact']];
+  const links = [['Our Vehicles', 'vehicles'], ['Explore Sambhaji Nagar', 'destinations'], ['Tour Packages', 'packages'], ['About Us', 'about'], ['Contact Us', 'contact']];
   return <header className="header">
     <a href="#home" className="brand" aria-label={`${business.name} home`}><span className="brand-mark"><Compass size={21}/></span><span>{business.name}<small>MAHARASHTRA · INDIA</small></span></a>
     <button className="mobile-menu" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X/> : <Menu/>}</button>
@@ -40,8 +38,7 @@ function Hero() {
       <h1>Explore Sambhaji Nagar<br/><em>with comfort & confidence.</em></h1>
       <p>Reliable rides, thoughtful local knowledge and unhurried journeys to the places worth remembering.</p>
       <div className="hero-actions"><a href="#booking" className="button button-cream">Plan your journey <ArrowRight size={17}/></a><a href="#destinations" className="button button-ghost">Explore the region <ArrowDown size={15}/></a></div>
-      <div className="hero
--proof"><span><ShieldCheck/> Experienced local drivers</span><i/><span><CarFront/> Comfortable vehicles</span><i/><span><Sparkles/> Personalised service</span></div>
+      <div className="hero-proof"><span><ShieldCheck/> Experienced local drivers</span><i/><span><CarFront/> Comfortable vehicles</span><i/><span><Sparkles/> Personalised service</span></div>
     </div><div className="hero-note"><span>01 / 10</span><b>DECCAN HERITAGE, AT YOUR OWN PACE</b>{destinations[0].credit && <a href={destinations[0].credit.url} target="_blank" rel="noreferrer">Photo: {destinations[0].credit.author} · {destinations[0].credit.license}</a>}<span className="note-line"/></div>
   </section>;
 }
@@ -54,8 +51,7 @@ function Intro() {
 }
 
 function Fleet() {
-  const featuredVehicles = vehicle
-s.filter((vehicle) => ['swift', 'ertiga', 'tempo'].includes(vehicle.id));
+  const featuredVehicles = vehicles.filter((vehicle) => ['swift', 'ertiga', 'tempo'].includes(vehicle.id));
   return <section id="vehicles" className="section section-tint"><div className="section-head"><div><div className="eyebrow"><span/> FIND YOUR RIDE</div><h2>Room for <em>your kind of journey.</em></h2></div><p>From a quick city pickup to a family day out, choose the space and comfort that suit you.</p></div>
     <div className="fleet-grid">{featuredVehicles.map((vehicle, index) => <article className="vehicle-card" key={vehicle.id}>
       <div className="vehicle-image"><img src={img(vehicle.image, 720)} alt={vehicle.alt} loading="lazy"/><span className="vehicle-type">0{index + 1} · {vehicle.type}</span></div>
@@ -68,10 +64,28 @@ s.filter((vehicle) => ['swift', 'ertiga', 'tempo'].includes(vehicle.id));
 }
 
 function Destinations({ onPhoto }) {
-  const [pickup, setPickup] = useState((
-) => sessionStorage.getItem('selectedPickup') || 'Sambhaji Nagar city centrs with a <em>story to tell.</em></h2></div>
+  const [pickup, setPickup] = useState(() => sessionStorage.getItem('selectedPickup') || 'Sambhaji Nagar city centre');
+  return <section id="destinations" className="section"><div className="section-head"><div><div className="eyebrow"><span/> THE DECCAN, OPEN TO YOU</div><h2>Places with a <em>story to tell.</em></h2></div>
     <div className="pickup"><MapPin size={17}/><label htmlFor="pickup-select">Starting from</label><select id="pickup-select" value={pickup} onChange={(event) => { setPickup(event.target.value); selectBooking({ pickup: event.target.value === 'custom' ? '' : event.target.value }); }}><option>Sambhaji Nagar city centre</option><option>Sambhaji Nagar Airport</option><option>Aurangabad Railway Station</option><option value="custom">Enter a pickup in the booking form</option></select></div>
   </div><p className="distance-note">Distances and journey times are approximate from central Sambhaji Nagar. Actual routes vary with pickup point and traffic.</p>
     <div className="destination-grid">{destinations.map((destination) => <article className="destination-card" key={destination.id}>
       <button className="destination-photo" aria-label={`View ${destination.name} photograph`} onClick={() => onPhoto(destination)}><img src={img(destination.image, 720)} alt={destination.alt} loading="lazy"/><span>{destination.kind}</span><b><ArrowUpRight size={17}/></b></button>
-      <div className="destination-body"><div className="destination-meta"><span><MapPin size={14}/> ≈ {destination.distance} km</span><span><Clo
+      <div className="destination-body"><div className="destination-meta"><span><MapPin size={14}/> ≈ {destination.distance} km</span><span><Clock3 size={14}/>{destination.time}</span></div><h3>{destination.name}</h3><p>{destination.description}</p>
+        {destination.credit && <small className="image-credit">Photo: <a href={destination.credit.url} target="_blank" rel="noreferrer">{destination.credit.author}</a> · {destination.credit.license}</small>}
+        <div className="destination-links"><a href={directions(destination.query)} target="_blank" rel="noreferrer">Directions <ArrowUpRight size={14}/></a><a href="#bookinrowRight size={14}/></a></div>
+      </div></article>)}</div>
+  </section>;
+}
+
+function Calculator() {
+  const [form, setForm] = useState(() => ({
+    pickup: sessionStorage.getItem('selectedPickup') === 'custom' ? '' : sessionStorage.getItem('selectedPickup') || 'Sambhaji Nagar city centre',
+    destination: sessionStorage.getItem('selectedDestination') || 'ellora', vehicle: sessionStorage.getItem('selectedVehicle') || 'ertiga',
+    date: '', passengers: '2', trip: 'one-way', returnDate: '', name: '', phone: '', notes: '',
+  }));
+  const destination = destinations.find((item) => item.id === form.destination);
+  const vehicle = vehicles.find((item) => item.id === form.vehicle);
+  useEffect(() => {
+    const applySelection = (event) => setForm((current) => ({ ...current, ...event.detail }));
+    window.addEventListener('booking-selection', applySelection);
+    return () => window.removeEventListener('booking-selec
